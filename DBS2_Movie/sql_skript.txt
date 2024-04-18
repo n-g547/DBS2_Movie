@@ -1,0 +1,47 @@
+create table genre(id INTEGER PRIMARY KEY, genre VARACHAR(100));
+
+create table movie(id INTEGER PRIMARY KEY, title Varchar(100), year INTEGER, type VARCHAR(1));
+
+create table hasGenre(genreID Integer, movieID INTEGER, FOREIGN KEY (genreID) REFERENCES genre(id), FOREIGN KEY (movieID) REFERENCES movie(id));
+
+create table person(id INTEGER Primary Key, name VARCHAR(100), sex VARCHAR(1));
+
+create table movieCharacter(id INTEGER PRIMARY KEY, character VARCHAR(100), alias VARCHAR(100), position INTEGER, movID INTEGER, perID INTEGER, FOREIGN KEY (movID) REFERENCES movie(id), FOREIGN KEY(perID) REFERENCES person(id));
+
+.tables
+genre           hasGenre        movie           movieCharacter  person
+
+INSERT INTO genre VALUES(null, 'action');
+INSERT INTO genre VALUES(null, 'comedy');
+INSERT INTO genre VALUES(null, 'Fantasy');
+
+
+INSERT INTO movie VALUES(null, 'Harry Potter und der Halbblutprinz', 2009, 'm');
+INSERT INTO movie VALUES(null, 'Baby Driver', 2017, 'm');
+
+INSERT INTO hasGenre VALUES(1, 1);
+INSERT INTO hasGenre VALUES(2, 1);
+INSERT INTO hasGenre VALUES(3, 2);
+
+
+INSERT INTO person VALUES(null, 'Daniel Redcliffe', 'm');
+INSERT INTO person VALUES(null, 'Alan Rickman', 'm');
+INSERT INTO person VALUES(null, 'Kevin Spacey', 'm');
+
+INSERT INTO movieCharacter VALUES(null, 'Harry Potter', 'Potter', 1, 1, 1);
+INSERT INTO movieCharacter VALUES(null, 'Severus Snape', 'Prof', 1, 1, 2);
+INSERT INTO movieCharacter VALUES(null, 'Doc', 'Doc', 2, 2, 3);
+
+delete from movieCharacter;
+delete from hasGenre;
+
+DROP TABLE movieCharacter;
+DROP TABLE hasGenre;
+DROP TABLE genre;
+DROP TABLE movie;
+DROP TABLE person;
+
+
+sqlite> select m.id, m.title, m.year, m.type, g.id, g.genre, mc.id, mc.character from ((Movie m join hasGenre hg ON m.id = hg.movieId)left join genre g ON hg.genreID=g.id)left join movieCharacter mc on m.id=mc.movID WHERE m.id=1;
+
+select m.id, m.title, m.year, m.type, g.id, g.genre, mc.id, mc.character from (((Movie m join hasGenre hg ON m.id = hg.movieId)join genre g ON hg.genreID=g.id) join movieCharacter mc on m.id=mc.movID join person p ON mc.perID=p.id) where m.id = 1;
